@@ -1,0 +1,9 @@
+{
+  "name": "supercollider",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "supercolliderjs": "^0.14.2"
+  }
+}
