@@ -2,6 +2,23 @@ require! {
   supercolliderjs: { msg }: sc
 }
 
+class Synth
+  (@server, @name, @opts) ->
+    @server.send.msg msg.synthNew do
+      @name
+      @id = server.state.nextNodeID()
+      msg.AddActions.TAIL
+      0
+      @opts
+      
+  set: (opts) -> 
+    @server.send.msg msg.nodeSet @id, opts
+    @opts <<< opts
+    
+  free: ->
+    @server.send.msg msg.nodeFree @id
+    
+        
 sc.server.boot {
   loadDefs: false
   env:
@@ -11,7 +28,19 @@ sc.server.boot {
   .then (server) ->
     
     server.loadSynthDef do
-      'roboPiano',
+      'spaceSin',
       './synth.scd'
-    .then -> 
-      server.send.msg msg.synthNew 'roboPiano', -1, msg.AddActions.TAIL, 0, freq: 2200
+    .then ->
+
+      x = new Synth server, 'spaceSin', freq: 110
+      plop = ->
+        newFreq = x.opts.freq * 2
+        if newFreq < 500
+          setTimeout plop, 1000
+          x.set freq: newFreq
+        else
+          x.free()
+          
+      setTimeout plop, 1000
+
+      

@@ -10,3 +10,15 @@ SynthDef("roboPiano", {arg out = 0, freq = 440, amp = 0.2, pan = 0.5;
 	snd = snd * env ;
 	Out.ar(out, Pan2.ar(snd, pan));
 }).add;
+
+
+SynthDef("spaceSin", { arg out = 0, freq = 440, amp = 1, gate = 1, cutoff = 100, rq = 0.1, att = 0.1, dec = 0, sus = 1, rel = 0;
+	var env;
+	env = EnvGen.ar(
+		envelope: Env.adsr(0.3, 0, 1, 0.3),
+		gate: gate,
+		doneAction: 2);
+	Out.ar(out, Pan2.ar(
+		Mix(SinOsc.ar( [ freq / env, freq / env * 2, freq / env * 4 ], mul: amp * env * 0.3))
+	));
+}).add;
